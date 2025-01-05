@@ -120,14 +120,34 @@ if __name__ == "__main__":
     # Read command line arguments for display_status and target_changeable
     show_status = "--show-status" in sys.argv
     target_changeable = "--target-changeable" in sys.argv
-    min_tasks = "--min-tasks" in sys.argv
-
-    if min_tasks <= 0:
-        print("Minimum tasks must be greater than 0.")
-        sys.exit(1)
-
-    max_tasks = "--max-tasks" in sys.argv
-
+    
+    # Get min and max tasks from command line arguments
+    min_tasks = None
+    max_tasks = None
+    
+    for arg in sys.argv:
+        if arg.startswith("--min-tasks="):
+            try:
+                min_tasks = int(arg.split("=")[1])
+                if min_tasks <= 0:
+                    print("Minimum tasks must be greater than 0.")
+                    sys.exit(1)
+            except ValueError:
+                print("Invalid min tasks value")
+                sys.exit(1)
+                
+        if arg.startswith("--max-tasks="):
+            try:
+                max_tasks = int(arg.split("=")[1])
+            except ValueError:
+                print("Invalid max tasks value")
+                sys.exit(1)
+    
+    if min_tasks is None:
+        min_tasks = 3  # Default value
+    if max_tasks is None:
+        max_tasks = 5  # Default value
+        
     if max_tasks < min_tasks:
         print("Maximum tasks must be greater than minimum tasks.")
         sys.exit(1)
