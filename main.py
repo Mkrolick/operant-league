@@ -25,7 +25,7 @@ def display_status(tasks_completed, target):
     """Display how many tasks are completed and how many are needed."""
     print(f"Tasks Completed: {tasks_completed} / {target}")
 
-def main(show_status=False, target_changeable=False):
+def main(show_status=False, target_changeable=False, min_tasks=MIN_TASKS, max_tasks=MAX_TASKS):
     """
     A command-line tool that:
     1. Displays how many tasks are needed before a LoL break.
@@ -58,7 +58,7 @@ def main(show_status=False, target_changeable=False):
         if choice == "1":
             tasks_completed += 1
             log_progress("Task completed.")
-            
+
             if show_status:
                 display_status(tasks_completed, current_target)
             
@@ -120,6 +120,18 @@ if __name__ == "__main__":
     # Read command line arguments for display_status and target_changeable
     show_status = "--show-status" in sys.argv
     target_changeable = "--target-changeable" in sys.argv
+    min_tasks = "--min-tasks" in sys.argv
 
-    main(show_status=show_status, target_changeable=target_changeable)
+    if min_tasks <= 0:
+        print("Minimum tasks must be greater than 0.")
+        sys.exit(1)
+
+    max_tasks = "--max-tasks" in sys.argv
+
+    if max_tasks < min_tasks:
+        print("Maximum tasks must be greater than minimum tasks.")
+        sys.exit(1)
+
+    main(show_status=show_status, target_changeable=target_changeable, min_tasks=min_tasks, max_tasks=max_tasks)
+
 
